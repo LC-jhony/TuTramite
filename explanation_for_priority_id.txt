@@ -1,0 +1,10 @@
+
+Regarding the `Select::make('priority_id')` in `app/Filament/Resources/Documents/Schemas/DocumentForm.php`:
+
+The field is marked with `->required()`, which means a priority must always be selected. Therefore, it will always have an associated record, and the scenario where it "doesn't have a record" (meaning no selected priority) should not occur under normal circumstances.
+
+If you intend to have an option for "no priority" which would then display '0' (though '0' is not a typical ID for a database record), you would need to:
+1.  Remove the `->required()` method from the `Select` component.
+2.  Manually add an option to the `->options()` that represents "No Priority" (e.g., `null` or a specific ID if you have a "No Priority" record in your `priorities` table).
+
+As the code currently stands, a valid `Priority` record will always be associated with the `priority_id` field.
