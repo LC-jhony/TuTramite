@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Office;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class OfficeSeeder extends Seeder
@@ -13,6 +14,15 @@ class OfficeSeeder extends Seeder
      */
     public function run(): void
     {
+        $municipality = Office::create([
+            'code' => 'MDP',
+            'name' => 'Mesa de Partes',
+            'acronym' => 'MDPS',
+            'parent_office_id' => null,
+            'level' => 1,
+            'manager' => 'Mesa de Partes',
+            'status' => true,
+        ]);
         // Nivel 1
         $municipality = Office::create([
             'code' => 'MUNI',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Documents\Tables;
 
 use Filament\Actions\BulkActionGroup;
@@ -15,51 +17,41 @@ class DocumentsTable
     {
         return $table
             ->columns([
+                TextColumn::make('client')
+                    ->label('Cliente')
+                    ->getStateUsing(fn ($record) => $record->client ? $record->client->dni.' '.$record->client->ruc : ''),
                 TextColumn::make('document_number')
-                    ->searchable(),
-                TextColumn::make('file_number')
-                    ->searchable(),
-                TextColumn::make('subject')
-                    ->searchable(),
-                TextColumn::make('document_type_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('priority_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('administration_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('sender_type')
-                    ->searchable(),
-                TextColumn::make('sender_user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('destination_office_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('destination_user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('document_date')
-                    ->date()
-                    ->sortable(),
+                    ->label('Numero'),
+                TextColumn::make('case_number')
+                    ->label('Caso'),
+                // TextColumn::make('subject'),
+                TextColumn::make('origen')
+                    ->label('Origén')
+                    ->badge(),
+                // TextColumn::make('documentType.name'),
+                TextColumn::make('officeOrigen.name')
+                    ->label('Oficina'),
+                // TextColumn::make('gestion.name')
+                //     ->badge(),
+                TextColumn::make('user.name')
+                    ->label('Usuario')
+                    ->placeholder('N/A'),
+                TextColumn::make('folio')
+                    ->label('Folio'),
+                TextColumn::make('reception_date')
+                    ->label('Rescepción'),
                 TextColumn::make('response_deadline')
-                    ->date()
-                    ->sortable(),
+                    ->label('Respuesta'),
+                // TextColumn::make('condition'),
                 TextColumn::make('status')
-                    ->searchable(),
-                TextColumn::make('reference_document_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('registered_by_user_id')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Estado'),
                 TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

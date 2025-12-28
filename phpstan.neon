@@ -1,0 +1,20 @@
+includes:
+    - ./vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/rules.neon
+    - ./vendor/phpstan/phpstan-deprecation-rules/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - app/
+    excludePaths:
+        - bootstrap/
+        - config/
+        - database/
+        - public/
+        - resources/
+        - routes/
+        - storage/
+        - tests/
+        - vendor/
+    checkMissingIterableValueType: false

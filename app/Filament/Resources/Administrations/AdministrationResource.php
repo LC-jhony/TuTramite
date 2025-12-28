@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Administrations;
 
 use App\Filament\Resources\Administrations\Pages\CreateAdministration;
@@ -22,9 +24,9 @@ class AdministrationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $modelLabel = 'Gestion';
+    protected static ?string $modelLabel = 'Periodo';
 
-    protected static ?string $pluralModelLabel = 'Gestiones';
+    protected static ?string $pluralModelLabel = 'Periodos';
 
     public static function form(Schema $schema): Schema
     {

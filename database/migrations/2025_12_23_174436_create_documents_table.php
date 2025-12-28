@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,22 +15,20 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->string('document_number');
-            $table->string('file_number');
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->string('document_number')->unique(); // número de trámite único
+            $table->string('case_number')->unique();
             $table->string('subject');
-            $table->foreignId('document_type_id')->constrained('document_types');
-            $table->foreignId('priority_id')->constrained('priorities');
-            $table->foreignId('administration_id')->constrained('administrations');
-            $table->string('sender_type');
-            $table->foreignId('sender_user_id')->constrained('users');
-            $table->foreignId('destination_office_id')->constrained('offices');
-            $table->foreignId('destination_user_id')->constrained('users');
-            $table->text('content');
-            $table->date('document_date');
-            $table->date('response_deadline');
+            $table->string('origen'); // interno / externo
+            $table->foreignId('document_type_id')->constrained('document_types')->onDelete('cascade');
+            $table->foreignId('area_origen_id')->constrained('offices')->onDelete('cascade'); // ✅ corregido
+            $table->foreignId('gestion_id')->constrained('administrations')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->string('folio')->nullable();
+            $table->date('reception_date');
+            $table->date('response_deadline')->nullable();
+            $table->string('condition')->nullable(); // o elimínalo si no es necesario
             $table->string('status');
-            $table->foreignId('reference_document_id')->nullable()->constrained('documents');
-            $table->foreignId('registered_by_user_id')->constrained('users');
             $table->timestamps();
         });
     }
