@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('cascade');
             $table->string('document_number')->unique(); // número de trámite único
             $table->string('case_number')->unique();
             $table->string('subject');

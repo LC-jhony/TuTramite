@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Documents\Pages;
 
 use App\Filament\Resources\Documents\DocumentResource;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Icons\Heroicon;
 
 class ViewDocument extends ViewRecord
 {
@@ -14,6 +16,9 @@ class ViewDocument extends ViewRecord
     {
         return [
             EditAction::make(),
+            Action::make('Derivar')
+                ->color('success')
+                ->icon(Heroicon::ArrowUpLeft)
         ];
     }
 }

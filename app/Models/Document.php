@@ -24,6 +24,7 @@ class Document extends Model
         'response_deadline',
         'condition',
         'status',
+        'priority_id'
     ];
 
     public function client()

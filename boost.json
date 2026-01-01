@@ -1,7 +1,17 @@
 {
     "agents": [
         "codex",
-        "gemini"
+        "copilot",
+        "gemini",
+        "opencode"
     ],
-    "guidelines": []
+    "editors": [
+        "codex",
+        "gemini",
+        "opencode",
+        "vscode"
+    ],
+    "guidelines": [
+        "filament/filament"
+    ]
 }
