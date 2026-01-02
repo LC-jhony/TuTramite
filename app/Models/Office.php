@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Office extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'code',
         'name',
@@ -19,6 +22,7 @@ class Office extends Model
         'manager',
         'status',
     ];
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(
@@ -26,11 +30,17 @@ class Office extends Model
             foreignKey: 'parent_office_id'
         );
     }
+
     public function children(): HasMany
     {
         return $this->hasMany(
             related: Office::class,
             foreignKey: 'parent_office_id'
         );
+    }
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
     }
 }

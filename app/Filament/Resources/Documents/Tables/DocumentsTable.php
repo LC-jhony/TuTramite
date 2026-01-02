@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Documents\Tables;
 
 use App\Models\Document;
+use App\Models\Office;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -13,10 +15,12 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Support\Enums\Size;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentsTable
 {
@@ -37,7 +41,7 @@ class DocumentsTable
                 TextColumn::make('origen')
                     ->label('Origén')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'Interno' => 'info',
                         'Externo' => 'danger',
                     }),
@@ -79,15 +83,43 @@ class DocumentsTable
                         ->icon(Heroicon::ArrowRightCircle)
                         ->color('danger')
                         ->form([
-                            Select::make('id_office_destination'),
-                            Select::make('id_user_destination'),
-                            Textarea::make('indication'),
-                            Toggle::make('priority'),
-                            Toggle::make('require_response')
+                            Select::make('destination_office_id')
+                                ->label('Oficina Destino')
+                                ->options(Office::where('status', true)->pluck('name', 'id'))
+                                ->searchable()
+                                ->native(false)
+                                ->afterStateUpdated(function ($state, Set $set) {
+                                    $set('destination_user_id', null); // Clear first
+                                    if ($state) { // If an office is selected
+                                        $firstUser = User::where('office_id', $state)->first();
+                                        $set('destination_user_id', $firstUser?->id);
+                                    }
+                                })
+                                ->live(),
+                            Select::make('destination_user_id')
+                                ->label('Usuario Destino')
+                                ->reactive()
+                                ->options(
+                                    fn (callable $get) => User::where('office_id', $get('destination_office_id'))->pluck('name', 'id')->toArray()
+                                )
+                                ->searchable()
+                                ->preload(false),
+                            Textarea::make('indication')
+                                ->label('Indicación'),
                         ])
+                        ->slideOver()
                         ->action(function (Document $record, array $data) {
                             $record->movements()->create([
-                                'numero'
+                                'document_id',
+                                'origin_office_id' => $record->id_office_destination,
+                                'origin_user_id' => Auth::id(),
+                                'destination_office_id' => $data['destination_office_id'],
+                                'destination_user_id' => $data['destination_user_id'],
+                                'action' => 'DERIVACION',
+                                'indication' => $data['indication'],
+                                'observation' => $data['observation'],
+                                'receipt_date' => $data['receipt_date'],
+                                'status' => 'ENVIADO',
                             ]);
                         }),
                     Action::make('atender')
@@ -95,9 +127,14 @@ class DocumentsTable
                         ->icon(Heroicon::CheckCircle)
                         ->color('success')
                         ->requiresConfirmation(),
-                    ViewAction::make(),
-                    EditAction::make(),
                 ])
+                    ->label('More actions')
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size(Size::Small)
+                    ->color('primary')
+                    ->button(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
